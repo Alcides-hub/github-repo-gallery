@@ -2,8 +2,8 @@
 const overview = document.querySelector(".overview");
 const username = "Alcides-hub"; // this global variable sets the username of Github profile.
 const repoList = document.querySelector(".repo-list");
-const allRepos = document.querySelector(".repos");
-const singleRepo = document.querySelector(".repo-data");
+const allRepos = document.querySelector(".repos"); //all repos information will be located here.
+const singleRepo = document.querySelector(".repo-data"); //individual repo will appear here
 
 const gitProfileInfo = async function () {  //this function will fetch data from github API by adding the user end point 
     const userInfo = await fetch (`https://api.github.com/users/${username}`); //fetches the API
@@ -46,33 +46,33 @@ const displayEachRepo = function (repos) { // function that displays the repos y
     }
 };
 
-repoList.addEventListener("click", function(e) {
-    if (e.target.matches("h3")) {
-        const repoName = e.target.innerText;
-        specificUserInfo(repoName);
+repoList.addEventListener("click", function(e) { //click event for the unordered list with a class of "repo-list"
+    if (e.target.matches("h3")) { // add an if statement to check if event target matches H3 element.
+        const repoName = e.target.innerText; // target the innertex where the event happens.
+        specificUserInfo(repoName); // call to async function passing reponame as arguement. Now you can see if the specific objects about the repo.
     }
 });
 
-const specificUserInfo = async function (repoName) {
-    const grabRepoSpec = await fetch(`https://api.github.com/repos/${username}/${repoName}`);
-    const repoInfo = await grabRepoSpec.json();
-    console.log(repoInfo);
-    const fetchLanguages = await fetch(repoInfo.languages_url);
-    const languageData = await fetchLanguages.json();
-    console.log(languageData);
-    
-    const languages = [];
-    for (const language in languageData) {
+const specificUserInfo = async function (repoName) { //create a function to get specific repo information that accepts reponame as a parameter
+    const grabRepoSpec = await fetch(`https://api.github.com/repos/${username}/${repoName}`); //make a fetch request to grab information about specific repository.
+    const repoInfo = await grabRepoSpec.json(); //resolve and save json response.
+    console.log(repoInfo); 
+    const fetchLanguages = await fetch(repoInfo.languages_url); //create a variable to fetch once language_url property of your portfolio.
+    const languageData = await fetchLanguages.json(); //create a variable to save the JSON response.
+    console.log(languageData); //log out the language data, you can now click on the repo and check the language data.
+     
+    const languages = []; // now you have the languages for your repo. Add each language to an empty array called languages.
+    for (const language in languageData) { //loop through languageData to add languages to the end of the array. Why?
         languages.push(language);
-        console.log(languages);
+        console.log(languages); //now you should see your array show up on the page.
     }
-specificRepoInfo(repoInfo, languages);
+specificRepoInfo(repoInfo, languages); //call the function specificRepoInfo and pass both arguments in the array.
 
 };
-    const specificRepoInfo = function(repoInfo, languages) {
-        singleRepo.innerHTML = "";
-        singleRepo.classList.remove("hide");
-        allRepos.classList.add("hide");
+    const specificRepoInfo = function(repoInfo, languages) { //create a function to get specific repo information.
+        singleRepo.innerHTML = ""; //empty thr HTML of the section where the individual repo data will appear.
+        singleRepo.classList.remove("hide"); //unhide the repo-data element.
+        allRepos.classList.add("hide"); //hide the element with class repos.
         const div = document.createElement("div");
         // div.classList.add(".repository-info"); no need to add a class.
         div.innerHTML = `
@@ -81,8 +81,9 @@ specificRepoInfo(repoInfo, languages);
         <p>Default Branch: ${repoInfo.default_branch}</p>
         <p>Languages: ${languages.join(", ")}</p>
         <a class="visit" href="${repoInfo.html_url}" target="_blank" rel="noreferrer noopener">View Repo on GitHub!</a>`
+        //add the selected repository name, description, default branch, and links to its code on github.
         // div.append(".repo-data")
-        singleRepo.append(div);
+        singleRepo.append(div); //append the new div element to the section.
 };
 
 
