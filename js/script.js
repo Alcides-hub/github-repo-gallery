@@ -4,6 +4,8 @@ const username = "Alcides-hub"; // this global variable sets the username of Git
 const repoList = document.querySelector(".repo-list");
 const allRepos = document.querySelector(".repos"); //all repos information will be located here.
 const singleRepo = document.querySelector(".repo-data"); //individual repo will appear here
+const backToRepo = document.querySelector(".view-repos");
+const filterInput = document.querySelector(".filter-repos");
 
 const gitProfileInfo = async function () {  //this function will fetch data from github API by adding the user end point 
     const userInfo = await fetch (`https://api.github.com/users/${username}`); //fetches the API
@@ -39,6 +41,7 @@ const gitRepos = async function () { //Async function to fetch my repos using Gi
 
 const displayEachRepo = function (repos) { // function that displays the repos you fetched using API, by looping through the repos data (not sure why they called it repos?), then created a list.
     for (let repo of repos) {
+        filterInput.classList.remove("hide");
         const li = document.createElement("li"); // created a list element to appear as HTML code.
         li.classList.add("repo"); // added a class list called repo.
         li.innerHTML = `<h3>${repo.name}</h3>`; // add H3 element to the new list with the name of the repo.
@@ -84,9 +87,30 @@ specificRepoInfo(repoInfo, languages); //call the function specificRepoInfo and 
         //add the selected repository name, description, default branch, and links to its code on github.
         // div.append(".repo-data")
         singleRepo.append(div); //append the new div element to the section.
+        backToRepo.classList.remove("hide");
 };
 
+backToRepo.addEventListener("click", function () {
+    allRepos.classList.remove("hide");
+    singleRepo.classList.add("hide");
+    backToRepo.classList.add("hide");
+});
 
+filterInput.addEventListener("input", function(e) {
+    const searchText = e.target.value;
+    console.log(searchText);
+    const allVariables = document.querySelectorAll(".repo");
+    const lowerCase = searchText.toLowerCase();
+    
+    for (const repo of allVariables) {
+        const repoLowerText = repo.innerText.toLowerCase();
+        if (repoLowerText.includes(lowerCase)) {
+            repo.classList.remove("hide");
+        } else {
+            repo.classList.add("hide");
+        }
+    }
+});
 
 
 
